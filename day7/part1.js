@@ -55,9 +55,9 @@ async function main() {
         Object.keys(obj).forEach(key => {
             let count = 0;
     
-        console.log(`key: ${key}, value: ${obj[key]}`)
+            console.log(`key: ${key}, value: ${obj[key]}`)
     
-        if (typeof obj[key] === 'object' && obj[key] !== null) {
+            if (typeof obj[key] === 'object' && obj[key] !== null) {
                 iterate(obj[key])
             }
         })
