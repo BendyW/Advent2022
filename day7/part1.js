@@ -50,8 +50,19 @@ async function main() {
             temp[text[1]] = text[0]
         }
     })
+    console.log(fileDirectory)
+    const iterate = (obj) => {
+        Object.keys(obj).forEach(key => {
+            let count = 0;
     
-    console.log(fileDirectory.sfb.mjqww.bqpmsnv)
+        console.log(`key: ${key}, value: ${obj[key]}`)
+    
+        if (typeof obj[key] === 'object' && obj[key] !== null) {
+                iterate(obj[key])
+            }
+        })
+    }
+iterate(fileDirectory)
 }
 
 main()
