@@ -40,6 +40,11 @@ async function main() {
             if(text[1] === 'ls') {
                 temp = fileDirectory
                 for (var i=0;i<directoryConcatArray.length;i++) temp=temp[directoryConcatArray[i]];
+                temp.size = () => {
+                    temp.contents.map(file => {
+                        console.log(file)
+                    })
+                }
             }
         } else if(text[0] === 'dir') {
             //create dir
@@ -50,19 +55,36 @@ async function main() {
             temp[text[1]] = text[0]
         }
     })
-    console.log(fileDirectory)
-    const iterate = (obj) => {
-        Object.keys(obj).forEach(key => {
-            let count = 0;
+    // console.log(fileDirectory)
+    // const iterate = (obj) => {
+    //     Object.keys(obj).forEach(key => {
+    //         let count = 0;
+    //         count++
+    //         // console.log(count)
+    //         // console.log(`key: ${key}, value: ${obj[key]}`)
     
-            console.log(`key: ${key}, value: ${obj[key]}`)
-    
-            if (typeof obj[key] === 'object' && obj[key] !== null) {
-                iterate(obj[key])
-            }
-        })
-    }
-iterate(fileDirectory)
+    //         if (typeof obj[key] === 'object' && obj[key] !== null) {
+    //             iterate(obj[key])
+    //         }
+    //     })
+//     // }
+// iterate(fileDirectory)
+    let smallDirsSum = 0;
+    // for (let item of fileDirectory) {
+    //     let size = item.size()
+    //     console.log(size)
+    //     if (size <= 100000) {
+    //         smallDirsSum += size;
+    //     }
+    // }
+    Object.keys(fileDirectory).forEach(item => {
+        console.log(item)
+        // let size = item.size()
+        // console.log(size)
+        // if (size <= 100000) {
+        //     smallDirsSum += size;
+        // }
+    })
 }
 
 main()
