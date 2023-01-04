@@ -17,74 +17,75 @@ async function processLineByLine() {
   return inputArray
 }
 
+class FileSystem {
+    constructor(input) {
+        this.rootDirectory = {}
+    }
+    build(input) {
+        let directoryConcatArray = [];
+        let currentDirectory = this.directory
+        input.forEach(line => {
+            let text = line.split(" ")
+            //Command
+            if(text[0] === '$') {
+                //Change Directory
+                if(text[1] === "cd") {
+                    if(text[2] === '/') {
+                        //Clear directoryConcatArray and set currenty directory to base
+                        directoryConcatArray = []
+                        currentDirectory = this.rootDirectory
+                    } else if (text[2] === "..") {
+                        //Remove last key in directory array
+                        directoryConcatArray.pop()
+                    } else {
+                        //Add specific directory to directory key array
+                        directoryConcatArray.push(text[2])
+                    }
+                }
+                //Create list of files/folders inside current directory
+                if(text[1] === 'ls') {
+                    //reset to base directory
+                    currentDirectory = this.rootDirectory
+                    //create path to current directory using array of keys
+                    for (var i=0;i<directoryConcatArray.length;i++) currentDirectory=currentDirectory[directoryConcatArray[i]];
+                    //TODO: Add Size function to directory
+                    // currentDirectory.size = () => {
+                    //     currentDirectory.contents.map(file => {
+                    //         console.log(file)
+                    //     })
+                    // }
+                }
+            } else if(text[0] === 'dir') {
+                //create dir
+                //add dir creating class
+                currentDirectory[text[1]] = {}
+    
+            } else {
+                //create file
+                //add file creating class
+                currentDirectory[text[1]] = text[0]
+            }
+        })
+        console.log(this.rootDirectory)
+    }
+
+    size() {
+        //Figure out sizes
+    }
+}
+
+class Directory {
+
+}
+
+class File {
+    
+}
+
 async function main() {
     let inputArray = await processLineByLine();
-    let fileDirectory = {}
-    let directoryConcatArray = [];
-    let temp = fileDirectory;
-    //create directory file tree
-    inputArray.forEach(line => {
-        let text = line.split(" ")
-        if(text[0] === '$') {
-            if(text[1] === "cd") {
-                if(text[2] === '/') {
-                    //remove all nests
-                    directoryConcatArray = []
-                    temp = fileDirectory
-                } else if (text[2] === "..") {
-                    directoryConcatArray.pop()
-                } else {
-                    directoryConcatArray.push(text[2])
-                }
-            }
-            if(text[1] === 'ls') {
-                temp = fileDirectory
-                for (var i=0;i<directoryConcatArray.length;i++) temp=temp[directoryConcatArray[i]];
-                temp.size = () => {
-                    temp.contents.map(file => {
-                        console.log(file)
-                    })
-                }
-            }
-        } else if(text[0] === 'dir') {
-            //create dir
-            temp[text[1]] = {}
-
-        } else {
-            //create file
-            temp[text[1]] = text[0]
-        }
-    })
-    // console.log(fileDirectory)
-    // const iterate = (obj) => {
-    //     Object.keys(obj).forEach(key => {
-    //         let count = 0;
-    //         count++
-    //         // console.log(count)
-    //         // console.log(`key: ${key}, value: ${obj[key]}`)
-    
-    //         if (typeof obj[key] === 'object' && obj[key] !== null) {
-    //             iterate(obj[key])
-    //         }
-    //     })
-//     // }
-// iterate(fileDirectory)
-    let smallDirsSum = 0;
-    // for (let item of fileDirectory) {
-    //     let size = item.size()
-    //     console.log(size)
-    //     if (size <= 100000) {
-    //         smallDirsSum += size;
-    //     }
-    // }
-    Object.keys(fileDirectory).forEach(item => {
-        console.log(item)
-        // let size = item.size()
-        // console.log(size)
-        // if (size <= 100000) {
-        //     smallDirsSum += size;
-        // }
-    })
+    let fileSystem = new FileSystem(inputArray)
+    fileSystem.build(inputArray)
 }
 
 main()
