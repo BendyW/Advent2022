@@ -2,7 +2,7 @@ const fs = require("fs");
 const readline = require("readline");
 
 async function processLineByLine() {
-  const fileStream = fs.createReadStream("test-input.txt");
+  const fileStream = fs.createReadStream("input.txt");
 
   const rl = readline.createInterface({
     input: fileStream,
@@ -47,10 +47,7 @@ class Forest {
   }
 
   findVisibleInnerTrees() {
-    //dont check top or bottom rows
-    let count = 0;
     for (let i = 1; i < this.forestArray.length - 1; i++) {
-      //dont check furthest left or right column
       let row = this.forestArray[i];
       for (let j = 1; j < row.length - 1; j++) {
         //check top left bottom right if statement
@@ -66,12 +63,32 @@ class Forest {
           }
         }
         //right 
-        for (let k = row.length; k > j; k--) {
+        for (let k = row.length-1; k > j; k--) {
           let treesOnRight = this.forestArray[i][k];
           if (tree <= treesOnRight) {
             break;
           }
           if (tree > treesOnRight && k - 1 === j) {
+            this.isVisibleArray[i][j] = 1;
+          }
+        }
+        //top
+        for(let k = 0; k < i; k++) {
+          let treesOnTop = this.forestArray[k][j];
+          if (tree <= treesOnTop) {
+            break;
+          }
+          if (tree > treesOnTop && k === i - 1) {
+            this.isVisibleArray[i][j] = 1;
+          }
+        }
+        //bottom
+        for (let k = this.forestArray.length-1; k > i; k--) {
+          let treesOnBottom = this.forestArray[k][j];
+          if (tree <= treesOnBottom) {
+            break;
+          }
+          if (tree > treesOnBottom && k - 1 === i) {
             this.isVisibleArray[i][j] = 1;
           }
         }
@@ -85,6 +102,18 @@ class Forest {
       console.log(output)
     })
   }
+
+  countVisibleTrees() {
+    let count = 0;
+    this.isVisibleArray.forEach(line => {
+      line.forEach(tree => {
+        if (tree === 1) {
+          count++
+        }
+      })
+    })
+    return count
+  }
 }
 
 async function main() {
@@ -92,7 +121,8 @@ async function main() {
   let forest = new Forest(input);
   forest.findOutterPerimeter();
   forest.findVisibleInnerTrees();
-  forest.logVisibleOutput()
+  let visibleTrees = forest.countVisibleTrees()
+  console.log(visibleTrees)
 }
 
 main();
