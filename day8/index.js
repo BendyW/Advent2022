@@ -20,56 +20,70 @@ async function processLineByLine() {
 class Forest {
   constructor(forestInfo) {
     this.forestArray = [];
+    this.isVisibleArray = []
     this.createForest(forestInfo);
   }
 
   createForest(input) {
-    input.forEach((line) => {
+    input.forEach((line, index) => {
       let lineArray = [];
       this.forestArray.push(line.split(""));
+      this.isVisibleArray.push([])
+      for(let i = 0; i < line.split("").length; i++) {
+        this.isVisibleArray[index].push(0)
+      }
     });
   }
 
   findOutterPerimeter() {
-    let width = this.forestArray[0].length;
-    let height = this.forestArray.length;
-    let perimeter = width * 2 + height * 2 - 4;
-    return perimeter;
+    for(let i = 0; i < this.isVisibleArray[0].length; i++) {
+      this.isVisibleArray[0][i] = 1;
+      this.isVisibleArray[this.isVisibleArray.length-1][i] = 1;
+    }
+    for(let i = 0; i < this.isVisibleArray.length; i++) {
+      this.isVisibleArray[i][0] = 1;
+      this.isVisibleArray[i][this.isVisibleArray[i].length-1] = 1;
+    }
   }
 
-  //Idea for OO:
-  //When creating array of trees create a class for each tree than contains a height property and a is visible property
   findVisibleInnerTrees() {
     //dont check top or bottom rows
     let count = 0;
     for (let i = 1; i < this.forestArray.length - 1; i++) {
       //dont check furthest left or right column
       let row = this.forestArray[i];
-      console.log(row.length);
       for (let j = 1; j < row.length - 1; j++) {
         //check top left bottom right if statement
         let tree = row[j];
-        let isVisible = false;
+        //left
         for (let k = 0; k < j; k++) {
-          //Count needs to increment only once for each loop max,
-          //Set a boolean for ifVisible and check if is visible before doing if statement then increment if true at end
           let treesOnLeft = this.forestArray[i][k];
           if (tree <= treesOnLeft) {
             break;
           }
           if (tree > treesOnLeft && k === j - 1) {
-            isVisible = true;
+            this.isVisibleArray[i][j] = 1;
+          }
+        }
+        //right 
+        for (let k = row.length; k > j; k--) {
+          let treesOnRight = this.forestArray[i][k];
+          if (tree <= treesOnRight) {
+            break;
+          }
+          if (tree > treesOnRight && k - 1 === j) {
+            this.isVisibleArray[i][j] = 1;
           }
         }
       }
     }
   }
-}
 
-class Tree {
-  constructor(height) {
-    this.height = height
-    this.isVisible = false;
+  logVisibleOutput() {
+    this.isVisibleArray.forEach(line => {
+      let output = line.join('')
+      console.log(output)
+    })
   }
 }
 
@@ -78,6 +92,7 @@ async function main() {
   let forest = new Forest(input);
   forest.findOutterPerimeter();
   forest.findVisibleInnerTrees();
+  forest.logVisibleOutput()
 }
 
 main();
