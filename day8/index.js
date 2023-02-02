@@ -2,7 +2,7 @@ const fs = require("fs");
 const readline = require("readline");
 
 async function processLineByLine() {
-  const fileStream = fs.createReadStream("test-input.txt");
+  const fileStream = fs.createReadStream("input.txt");
 
   const rl = readline.createInterface({
     input: fileStream,
@@ -101,19 +101,21 @@ class Forest {
     }
   }
 
+  //counts all trees it can see in a line, counts tree that stops its viewing distance
   findViewDistance() {
     for (let i = 0; i < this.forestArray.length; i++) {
       let row = this.forestArray[i];
       for (let j = 0; j < row.length; j++) {
-        let countLeft = 1;
-        let countRight = 1;
-        let countTop = 1;
-        let countBottom = 1;
+        let countLeft = 0;
+        let countRight = 0;
+        let countTop = 0;
+        let countBottom = 0;
         let tree = row[j];
         //left
         for (let k = j-1; k >= 0; k--) {
           let treeOnLeft = this.forestArray[i][k];
           if (tree <= treeOnLeft) {
+            countLeft++
             break;
           }
           countLeft++
@@ -122,6 +124,7 @@ class Forest {
         for (let k = j+1; k < row.length; k++) {
           let treeOnRight = this.forestArray[i][k];
           if (tree <= treeOnRight) {
+            countRight++
             break;
           }
           countRight++
@@ -130,6 +133,7 @@ class Forest {
         for (let k = i-1; k >= 0; k--) {
           let treeOnTop = this.forestArray[k][j]
           if (tree <= treeOnTop) {
+            countTop++
             break;
           }
           countTop++
@@ -138,11 +142,15 @@ class Forest {
         for (let k = i+1; k < this.forestArray.length; k++) {
           let treeOnTop = this.forestArray[k][j]
           if (tree <= treeOnTop) {
+            countBottom++
             break;
           }
           countBottom++
         }
-        console.log(countLeft ,countRight ,countTop ,countBottom)
+        if (countLeft === 0 ) countLeft = 1
+        if (countRight === 0 ) countRight = 1
+        if (countTop === 0 ) countTop = 1
+        if (countBottom === 0 ) countBottom = 1
         this.distanceViewArray[i][j] = countLeft * countRight * countTop * countBottom
       }
     }
@@ -198,7 +206,6 @@ async function main() {
 
   //part 2
   forest.findViewDistance()
-  forest.logViewDistance()
   let longestView = forest.findLongestView();
   console.log(longestView)
 }
