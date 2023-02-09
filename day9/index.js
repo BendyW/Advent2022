@@ -55,16 +55,14 @@ function createGrid(x,y) {
     return array
 }
 
-function traverseGrid(grid, input) {
-    //start from the bottom left
-    //scrap grid
-    //store every position you see in coords
+function traverseGrid( input) {
+    let coordSet = new Set()
     let currentHeadX = 0;
-    let currentHeadY = grid.length-1;
+    let currentHeadY = 0;
     let lastStepHeadX = 0;
-    let lastStepHeadY = grid.length-1;
+    let lastStepHeadY = 0;
     let currentTailX = 0;
-    let currentTailY = grid.length-1;
+    let currentTailY = 0;
     input.forEach(line => {
         //move head function
 
@@ -73,40 +71,36 @@ function traverseGrid(grid, input) {
         let [direction, distance] = line.split(' ')
         distance = parseInt(distance, 10)
         for(let i = 1; i <= distance; i++) {
+            lastStepHeadX = currentHeadX
+            lastStepHeadY = currentHeadY
             if(direction === "R") {
-                lastStepHeadX = currentHeadX
                 currentHeadX++
             }
             if(direction === "L") {
-                lastStepHeadX = currentHeadX
                 currentHeadX --
             }
-            //invert for array
             if(direction === "U") {
-                lastStepHeadY = currentHeadY
-                currentHeadY--
-            }
-            if(direction === "D") {
-                lastStepHeadY = currentHeadY
                 currentHeadY++
             }
-            //check if tail needs to move
-            console.log(currentHeadX, currentHeadY)
+            if(direction === "D") {
+                currentHeadY--
+            }
             if(Math.abs(currentHeadX - currentTailX) >= 2 || Math.abs(currentHeadY - currentTailY) >= 2) {
-                grid[currentTailY][currentTailX] = 1;
                 currentTailY = lastStepHeadY;
                 currentTailX = lastStepHeadX;
             }
+            coordSet.add(`${currentTailX},${currentTailY}`)
         }
     })
-    // console.log(grid)
+    console.log(coordSet.entries())
+    console.log(coordSet.size)
 }
 
 async function main() {
     let input = await processLineByLine();
-    let [x,y] = findGridSize(input)
-    let grid = createGrid(x,y)
-    traverseGrid(grid, input)
+    // let [x,y] = findGridSize(input)
+    // let grid = createGrid(x,y)
+    traverseGrid(input)
 }
 
 main()
