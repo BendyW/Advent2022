@@ -17,28 +17,65 @@ async function processLineByLine() {
   return inputArray;
 }
 
+class Instruction {
+  constructor(code, v) {
+    if (code === 'noop') {
+      this.cyclesToProcessInstruction = 1;
+      this.v = 0;
+      this.code = code;
+    } else if (code === 'addx'){
+      this.cyclesToProcessInstruction = 2;
+      this.v = v;
+      this.code = code;
+    } else {
+      return 'error'
+    };
+  }
+}
+
+function incrementCycle(instruction, argCycle) {
+  return instruction.cyclesToProcessInstruction + argCycle
+}
+
+function cycleCheck(globalCycle, nextInterestingSignal) {
+  if(globalCycle >= nextInterestingSignal) {
+    return true
+  }
+  return false;
+}
+
+function calculateTotalValue(summedInstructions, nextInterestingSignal) {
+  return summedInstructions * nextInterestingSignal
+}
+
+function getNextInterestingSignal(nextInterestingSignal) {
+  console.log(nextInterestingSignal)
+  return nextInterestingSignal + 40;
+}
+
 async function main() {
   let input = await processLineByLine();
-  let cycle = 0;
-  let x = 1;
+  let globalCycle = 0;
   let totalValue = 0;
-  let cycleCheck = 20;
+  let summedInstructions = 1;
+  let nextInterestingSignal = 20;
 
   input.forEach(line => {
-    let v = 0;
     line = line.split(" ");
-    if(line[0] === "addx") {
-      cycle += 2
-      v = parseInt(line[1], 10);
-    } else {
-      cycle++
-    }
-    if (cycle >= cycleCheck) {
-      totalValue += x * cycleCheck;
-      cycleCheck += 40;
+    let code = line[0]
+    let v = parseInt(line[1], 10)
+    let instruction = new Instruction(code, v)
+
+    globalCycle = incrementCycle(instruction, globalCycle);
+
+    let isInterestingSignal = cycleCheck(globalCycle, nextInterestingSignal)
+
+    if (isInterestingSignal) {
+      totalValue += calculateTotalValue(summedInstructions, nextInterestingSignal)
+      nextInterestingSignal = getNextInterestingSignal(nextInterestingSignal);
     }
 
-    x += v;
+    summedInstructions += instruction.v;
   })
 
   console.log(totalValue)
