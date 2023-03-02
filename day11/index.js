@@ -68,13 +68,15 @@ class Monkey {
   }
 
   processItems(monkeys) {
+    let divisor = monkeys.reduce((d, monkey) => d * monkey.testDivisibleBy, 1);
     this.itemsInspected += this.itemsWorryLevelArray.length;
     while(this.itemsWorryLevelArray.length) {
       //Get next item
       let itemWorryLevel = this.itemsWorryLevelArray.shift()
       //Run Operation to calculate new worry level
-      itemWorryLevel = this.worryLevelOperation(itemWorryLevel, this.operatorOperand, this.operatorValue)
-      itemWorryLevel = Math.floor(itemWorryLevel / 3)
+      itemWorryLevel = this.worryLevelOperation(itemWorryLevel, this.operatorOperand, this.operatorValue) % divisor
+      //if part 1 level by 3
+      // itemWorryLevel = Math.floor(itemWorryLevel / 3)
       // Run test to see which monkey to pass to
       let isTestTrue = (itemWorryLevel % this.testDivisibleBy === 0) ? true : false;
 
@@ -97,7 +99,7 @@ class Monkey {
 
 async function main() {
   if(isDebug) console.log("Starting Keep Away")
-  const totalRounds = 20
+  const totalRounds = 10000
   let itemsInspected = 0
   let monkeys = await processInput();
 
@@ -119,7 +121,6 @@ async function main() {
   let part1Solution = 0;
   monkeys.forEach(monkey => {
     part1HighestValues.push(monkey.itemsInspected)
-    console.log(typeof monkey.itemsInspected)
   })
   part1HighestValues.sort(function (a, b) {  return a - b;  })
   part1HighestValues = part1HighestValues.slice(Math.max(part1HighestValues.length - 2, 0))
