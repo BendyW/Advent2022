@@ -23,7 +23,7 @@ async function main() {
    let count = 0;
    inputArray.forEach(input => {
     let numbers = input.match(r)
-    numbers = numbers.map(input => parseInt(input,10))
+    numbers = numbers.map(input => parseInt(input,10))g
     if((numbers[0] <= numbers[2] && numbers[1] >= numbers[3]) || (numbers[2] <= numbers[0] && numbers[3] >= numbers[1])) {
         count++;
     }

@@ -48,17 +48,19 @@ function calculateTotalValue(summedInstructions, nextInterestingSignal) {
   return summedInstructions * nextInterestingSignal
 }
 
-function getNextInterestingSignal(nextInterestingSignal) {
-  console.log(nextInterestingSignal)
+function getNextInterestingSignal(nextInterestingSignal) {c
   return nextInterestingSignal + 40;
 }
 
 async function main() {
+  // let globalCycle = 0;
+  // let totalValue = 0;
+  let spritePosition = 1;
+  // let nextInterestingSignal = 20;
+  let totalCycleValuesArray = [];
+  let pixelArray = new Array(6).fill('')
+
   let input = await processLineByLine();
-  let globalCycle = 0;
-  let totalValue = 0;
-  let summedInstructions = 1;
-  let nextInterestingSignal = 20;
 
   input.forEach(line => {
     line = line.split(" ");
@@ -66,19 +68,34 @@ async function main() {
     let v = parseInt(line[1], 10)
     let instruction = new Instruction(code, v)
 
-    globalCycle = incrementCycle(instruction, globalCycle);
+    // globalCycle = incrementCycle(instruction, globalCycle);
 
-    let isInterestingSignal = cycleCheck(globalCycle, nextInterestingSignal)
-
-    if (isInterestingSignal) {
-      totalValue += calculateTotalValue(summedInstructions, nextInterestingSignal)
-      nextInterestingSignal = getNextInterestingSignal(nextInterestingSignal);
+    for(let i = 0; i < instruction.cyclesToProcessInstruction; i++) {
+      totalCycleValuesArray.push(spritePosition)
     }
 
-    summedInstructions += instruction.v;
+    // let isInterestingSignal = cycleCheck(globalCycle, nextInterestingSignal)
+
+    // if (isInterestingSignal) {
+    //   totalValue += calculateTotalValue(summedInstructions, nextInterestingSignal)
+    //   nextInterestingSignal = getNextInterestingSignal(nextInterestingSignal);
+    // }
+    spritePosition += instruction.v;
   })
 
-  console.log(totalValue)
+  let i = 0;
+  totalCycleValuesArray.forEach((value, cycle) => {
+    let pixelPosition = cycle%40;
+    if(value === pixelPosition || value === pixelPosition + 1 || value === pixelPosition -1) {
+      pixelArray[i] += '#'
+    } else {
+      pixelArray[i] += '.'
+    }
+    if((cycle+1)%40 === 0)i++;
+  })
+
+  console.log(totalCycleValuesArray)
+  console.log(pixelArray)
 }
 
 main();
