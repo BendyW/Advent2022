@@ -68,6 +68,7 @@ class Monkey {
   }
 
   processItems(monkeys) {
+    //divisor to reduce number sizes for part 2
     let divisor = monkeys.reduce((d, monkey) => d * monkey.testDivisibleBy, 1);
     this.itemsInspected += this.itemsWorryLevelArray.length;
     while(this.itemsWorryLevelArray.length) {
@@ -75,7 +76,7 @@ class Monkey {
       let itemWorryLevel = this.itemsWorryLevelArray.shift()
       //Run Operation to calculate new worry level
       itemWorryLevel = this.worryLevelOperation(itemWorryLevel, this.operatorOperand, this.operatorValue) % divisor
-      //if part 1 level by 3
+      //if part 1 divide level by 3
       // itemWorryLevel = Math.floor(itemWorryLevel / 3)
       // Run test to see which monkey to pass to
       let isTestTrue = (itemWorryLevel % this.testDivisibleBy === 0) ? true : false;
